@@ -48,5 +48,15 @@ namespace csharp {
             app.UpdateQuality();
             Assert.AreEqual(0, Items[0].Quality);
         }
+
+        [Test]
+        public void QualityCantBeHigherThanFiftyTest() {
+            IList<Item> Items = new List<Item> { new Item { Name = "Aged Brie", SellIn = 10, Quality = 50 } };
+            GildedRose app = new GildedRose(Items);
+
+            // Assert that the Quality value does not go higher than 50:
+            app.UpdateQuality();
+            Assert.AreEqual(50, Items[0].Quality);
+        }
     }
 }
