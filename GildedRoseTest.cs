@@ -38,5 +38,15 @@ namespace csharp {
             Assert.AreEqual(-2, Items[0].SellIn);
             Assert.AreEqual(13, Items[0].Quality);
         }
+
+        [Test]
+        public void QualityCantBeLowerThanZeroTest() {
+            IList<Item> Items = new List<Item> { new Item { Name = "+5 Dexterity Vest", SellIn = 10, Quality = 0 } };
+            GildedRose app = new GildedRose(Items);
+
+            // Assert that the Quality value does not go lower than 0:
+            app.UpdateQuality();
+            Assert.AreEqual(0, Items[0].Quality);
+        }
     }
 }
