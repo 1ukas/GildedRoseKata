@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace csharp
-{
+namespace csharp {
     /*
         - All items have a SellIn value which denotes the number of days we have to sell the item
 	    - All items have a Quality value which denotes how valuable the item is
@@ -24,109 +23,84 @@ namespace csharp
 
      */
 
-    public class GildedRose
-    {
+    public class GildedRose {
         // Some constant strings for ease of writing:
         public const string AGED_BRIE_TAG = "Aged Brie";
         public const string BACKSTAGE_PASS_TAG = "Backstage passes to a TAFKAL80ETC concert";
         public const string SULFURAS_TAG = "Sulfuras, Hand of Ragnaros";
+        public const string CONJURED_TAG = "Conjured";
 
         IList<Item> Items;
-        public GildedRose(IList<Item> Items)
-        {
+        public GildedRose(IList<Item> Items) {
             this.Items = Items;
         }
 
-        public void UpdateQuality()
-        {
+        public void UpdateQuality() {
             // Loop through all the items in the system:
-            foreach (Item item in Items) {
-                // Check if the items sell by date has passed:
-                if (item.SellIn < 0) {
-                    // If passed, decrease the quality twice as fast:
-                    item.Quality = item.Quality - 2 < 0 ? 0 : item.Quality - 2; // Check so the quality does not become negative
-                }
-                else {
-                    // If the sell by date has not passed, decrease quality by one:
-                    item.Quality = item.Quality - 1 < 0 ? 0 : item.Quality - 1; // Check so the quality does not become negative
-                    item.SellIn -= 1; // Decrease the sell by date;
-                }
+            for (int i = 0; i < Items.Count; i++) {
+                ParseItem(Items[i]);
+                Items[i].SellIn--; // Decrease sell by date
+            }
+        }
+
+        public void ParseItem(Item item) {
+            // Sulfuras should be never altered or sold:
+            if (item.Name == SULFURAS_TAG) {
+                return;
             }
 
-            //// Loop through all the items in the system:
-            //for (var i = 0; i < Items.Count; i++)
-            //{
-            //    // If the item is not either 'Aged Brie' and a 'Backstage pass':
-            //    if (Items[i].Name != "Aged Brie" && Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
-            //    {
-            //        if (Items[i].Quality > 0)
-            //        {
-            //            if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-            //            {
-            //                Items[i].Quality = Items[i].Quality - 1;
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (Items[i].Quality < 50)
-            //        {
-            //            Items[i].Quality = Items[i].Quality + 1;
+            // Check if the items sell by date has passed:
+            if (item.SellIn < 0) {
+                if (item.Name == AGED_BRIE_TAG) {
+                    // Aged Brie increases in quality the older it gets:
+                    item.Quality = item.Quality + 2 > 50 ? 50 : item.Quality + 2; // Quality can never be above 50
+                    return;
+                }
 
-            //            if (Items[i].Name == "Backstage passes to a TAFKAL80ETC concert")
-            //            {
-            //                if (Items[i].SellIn < 11)
-            //                {
-            //                    if (Items[i].Quality < 50)
-            //                    {
-            //                        Items[i].Quality = Items[i].Quality + 1;
-            //                    }
-            //                }
+                // Backstage passes have 0 quality after the sell by date:
+                if (item.Name == BACKSTAGE_PASS_TAG) {
+                    item.Quality = 0;
+                    return;
+                }
 
-            //                if (Items[i].SellIn < 6)
-            //                {
-            //                    if (Items[i].Quality < 50)
-            //                    {
-            //                        Items[i].Quality = Items[i].Quality + 1;
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
+                // Conjured items degrade twice as fast:
+                if (item.Name.Contains(CONJURED_TAG)) {
+                    item.Quality = item.Quality - 4 < 0 ? 0 : item.Quality - 4; // Check so the quality does not become negative
+                    return;
+                }
 
-            //    if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-            //    {
-            //        Items[i].SellIn = Items[i].SellIn - 1;
-            //    }
+                // If passed, decrease the quality twice as fast:
+                item.Quality = item.Quality - 2 < 0 ? 0 : item.Quality - 2; // Check so the quality does not become negative
+            }
+            else {
+                if (item.Name == BACKSTAGE_PASS_TAG) {
+                    if (item.SellIn <= 10 && item.SellIn > 5) {
+                        item.Quality = item.Quality + 2 > 50 ? 50 : item.Quality + 2; // Quality can never be above 50
+                    }
+                    else if (item.SellIn <= 5 && item.SellIn > 0) {
+                        item.Quality = item.Quality + 3 > 50 ? 50 : item.Quality + 3; // Quality can never be above 50
+                    }
+                    else {
+                        item.Quality = item.Quality + 1 > 50 ? 50 : item.Quality + 1; // Quality can never be above 50
+                    }
+                    return;
+                }
 
-            //    if (Items[i].SellIn < 0)
-            //    {
-            //        if (Items[i].Name != "Aged Brie")
-            //        {
-            //            if (Items[i].Name != "Backstage passes to a TAFKAL80ETC concert")
-            //            {
-            //                if (Items[i].Quality > 0)
-            //                {
-            //                    if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
-            //                    {
-            //                        Items[i].Quality = Items[i].Quality - 1;
-            //                    }
-            //                }
-            //            }
-            //            else
-            //            {
-            //                Items[i].Quality = Items[i].Quality - Items[i].Quality;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            if (Items[i].Quality < 50)
-            //            {
-            //                Items[i].Quality = Items[i].Quality + 1;
-            //            }
-            //        }
-            //    }
-            //}
+                if (item.Name == AGED_BRIE_TAG) {
+                    // Aged Brie increases in quality the older it gets:
+                    item.Quality = item.Quality + 1 > 50 ? 50 : item.Quality + 1; // Quality can never be above 50
+                    return;
+                }
+
+                // Conjured items degrade twice as fast:
+                if (item.Name.Contains(CONJURED_TAG)) {
+                    item.Quality = item.Quality - 2 < 0 ? 0 : item.Quality - 2; // Check so the quality does not become negative
+                    return;
+                }
+
+                // If the sell by date has not passed, decrease quality by one:
+                item.Quality = item.Quality - 1 < 0 ? 0 : item.Quality - 1; // Check so the quality does not become negative
+            }
         }
     }
 }
