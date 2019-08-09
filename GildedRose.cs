@@ -38,14 +38,15 @@ namespace csharp {
         public void UpdateQuality() {
             // Loop through all the items in the system:
             for (int i = 0; i < Items.Count; i++) {
-                ParseItem(Items[i]);
                 Items[i].SellIn--; // Decrease sell by date
+                ParseItem(Items[i]);
             }
         }
 
         public void ParseItem(Item item) {
             // Sulfuras should be never altered or sold:
             if (item.Name == SULFURAS_TAG) {
+                item.SellIn++;
                 return;
             }
 
@@ -69,7 +70,7 @@ namespace csharp {
                     return;
                 }
 
-                // If passed, decrease the quality twice as fast:
+                // For basic items decrease the quality twice as fast:
                 item.Quality = item.Quality - 2 < 0 ? 0 : item.Quality - 2; // Check so the quality does not become negative
             }
             else {
@@ -98,7 +99,7 @@ namespace csharp {
                     return;
                 }
 
-                // If the sell by date has not passed, decrease quality by one:
+                // For basic items, if the sell by date has not been reached - decrease quality by one:
                 item.Quality = item.Quality - 1 < 0 ? 0 : item.Quality - 1; // Check so the quality does not become negative
             }
         }
