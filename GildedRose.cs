@@ -38,15 +38,18 @@ namespace csharp {
         public void UpdateQuality() {
             // Loop through all the items in the system:
             for (int i = 0; i < Items.Count; i++) {
-                Items[i].SellIn--; // Decrease sell by date
+                // Decrease the sell by value and check that it's not lower than minimum int:
+                Items[i].SellIn = Items[i].SellIn == int.MinValue ? int.MinValue : Items[i].SellIn - 1;
                 ParseItem(Items[i]);
             }
         }
 
         public void ParseItem(Item item) {
-            // Sulfuras should be never altered or sold:
+            // Sulfuras is special and so it cannot be sold:
             if (item.Name == SULFURAS_TAG) {
-                item.SellIn++;
+                // Increase the sell by value to avoid selling Sulfuras, and check if the value is not higher than max int:
+                item.SellIn = item.SellIn == int.MaxValue ? int.MaxValue : item.SellIn + 1;
+                item.Quality = 80; // Sulfuras' quality should always be 80
                 return;
             }
 

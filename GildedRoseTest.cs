@@ -24,6 +24,23 @@ namespace csharp {
         }
 
         [Test]
+        public void SellInFactorDecreaseTest() {
+            /*
+             * At the end of the day the SellIn value is decreased by 1 for every item
+             */
+
+            IList<Item> Items = new List<Item> { new Item { Name = "Basic Item", SellIn = 1, Quality = 20 },
+                                                 new Item { Name = "Basic Item", SellIn = 0, Quality = 20 },
+                                                 new Item { Name = "Basic Item", SellIn = int.MinValue, Quality = 20 }};
+            GildedRose app = new GildedRose(Items);
+            app.UpdateQuality();
+
+            Assert.AreEqual(0, Items[0].SellIn, "The SellIn value should decrease by 1 for every item");
+            Assert.AreEqual(-1, Items[1].SellIn, "The SellIn value should decrease by 1 even when at 0");
+            Assert.AreEqual(int.MinValue, Items[2].SellIn, "The SellIn value should not be lower than the minimum integer value");
+        }
+
+        [Test]
         public void QualityFactorIncreaseTest() {
             /*
              * Some items increase in quality depending on their SellIn value:
