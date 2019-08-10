@@ -151,14 +151,5 @@ namespace csharp {
             Assert.AreEqual(0, Items[0].Quality, "Conjured item quality should decrease by 2 when SellIn >= 0");
             Assert.AreEqual(0, Items[1].Quality, "Conjured item quality should decrease by 4 when SellIn < 0");
         }
-
-        //[Test]
-        //public void ItemCantBeNullTest() {
-        //    IList<Item> Items = new List<Item> { new Item {} };
-        //    GildedRose app = new GildedRose(Items);
-
-        //    // Assert that the UpdateQuality function throws a NullReferenceException when given a null item:
-        //    Assert.Throws<System.NullReferenceException>(() => app.UpdateQuality());
-        //}
     }
 }
