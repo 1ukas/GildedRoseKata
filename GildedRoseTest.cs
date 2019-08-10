@@ -41,6 +41,24 @@ namespace csharp {
         }
 
         [Test]
+        public void SulfurasSpecialTests() {
+            /*
+             * Because Sulfuras is a special item it acts differently:
+             * - Its quality is always 80,
+             * - We have to keep its SellIn value the same to avoid selling it.
+             */
+
+            IList<Item> Items = new List<Item> { new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = 1, Quality = 80 },
+                                                 new Item { Name = "Sulfuras, Hand of Ragnaros", SellIn = int.MaxValue, Quality = 50 }};
+            GildedRose app = new GildedRose(Items);
+            app.UpdateQuality();
+
+            Assert.AreEqual(1, Items[0].SellIn, "Sulfuras' SellIn value should not change");
+            Assert.AreEqual(int.MaxValue, Items[1].SellIn, "The SellIn value should not exceed the maximum integer value");
+            Assert.AreEqual(80, Items[1].Quality, "The quality of Sulfuras should always be 80");
+        }
+
+        [Test]
         public void QualityFactorIncreaseTest() {
             /*
              * Some items increase in quality depending on their SellIn value:
